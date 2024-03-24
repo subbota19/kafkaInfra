@@ -5,9 +5,9 @@ metadata:
     service: zookeeper
   name: zookeeper
 spec:
+  selector:
+    service: zookeeper
   ports:
     - name: "2181"
       port: 2181
       targetPort: 2181
-  selector:
-    service: zookeeper

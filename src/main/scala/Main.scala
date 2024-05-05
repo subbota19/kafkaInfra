@@ -1,32 +1,19 @@
-import org.apache.beam.sdk.Pipeline
-import org.apache.beam.sdk.io.kafka.{KafkaIO, KafkaRecord}
-import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.spark.sql.SparkSession
 
-object KafkaReader {
+object EvenNumberFilter {
   def main(args: Array[String]): Unit = {
-    val pipeline = Pipeline.create()
+    val spark = SparkSession.builder()
+      .appName("Even Number Filter")
+      .master("local[*]") // Run Spark locally using all available CPU cores
+      .getOrCreate()
 
-    val bootstrapServers = "localhost:9092"
-    val topic = "test"
-    val groupId = "your-group-id"
+    // Create input data (list of numbers)
+    val inputData = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
-    val kafkaConfig = KafkaIO.read[String, String]()
-      .withBootstrapServers(bootstrapServers)
-      .withTopics(Seq(topic))
-      .withConsumerConfigUpdates(Map("group.id" -> groupId))
-      .withKeyDeserializer(classOf[StringDeserializer])
-      .withValueDeserializer(classOf[StringDeserializer])
+    val input = spark.sparkContext.parallelize(inputData).filter(lambda x: x % 2 == 0).collect()
 
-    val messages = pipeline.apply(KafkaIO.read[String, String]().withBootstrapServers(bootstrapServers)
-      .withTopics(Seq(topic))
-      .withKeyDeserializer(classOf[StringDeserializer])
-      .withValueDeserializer(classOf[StringDeserializer])
-      .withoutMetadata())
-
-    messages
-      .map(record => record.getKV.getKey + ": " + record.getKV.getValue)
-      .map(println)
-
-    pipeline.run().waitUntilFinish()
+    println(input)
+    // Stop the SparkSession
+    spark.stop()
   }
 }

@@ -13,7 +13,7 @@ def runner(bootstrap_servers, topic, process_id):
             "id": randint(0, 100),
             "type": "multiprocessing",
             "message": "TEST MESSAGE",
-            "datetime": datetime.now().isoformat(),
+            "datetime": str(datetime.now().isoformat()),
             "process_id": process_id
         }
         producer.send_message(topic, dumps(message))

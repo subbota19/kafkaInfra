@@ -1,31 +1,23 @@
-# builder step used to download and configure spark environment
-FROM openjdk:11.0.11-jre-slim-buster as builder
-# FROM openjdk:8-jdk as builder
+FROM openjdk:11-jre-slim as builder
 
-# Add Dependencies for PySpark and Scala
-RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates python3 python3-pip python3-numpy python3-matplotlib python3-scipy python3-pandas python3-simpy
+ARG scala_version=2.13.8
+ARG shared_workspace=/opt/workspace
 
-# ENV SCALA_VERSION=2.13.13
+RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates python3 python3
 
-# RUN wget http://www.scala-lang.org/files/archive/scala-$SCALA_VERSION.deb && \
-#     apt-get remove scala-library scala && \
-#     dpkg -i scala-$SCALA_VERSION.deb && \
-#     rm scala-$SCALA_VERSION.deb
+RUN curl https://scala-lang.org/files/archive/scala-${scala_version}.deb -k -o scala.deb && \
+    apt install -y ./scala.deb && \
+    rm -rf scala.deb /var/lib/apt/lists/*
 
-RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3)" 1
-
-# Note: PYTHONHASHSEED is needed when you use Python 3.3 or greater
 ENV SPARK_VERSION=3.4.0 \
 HADOOP_VERSION=3 \
-SPARK_HOME=/opt/spark \
-PYTHONHASHSEED=1
+SPARK_HOME=/opt/spark
 
 # Download and uncompress spark from the apache archive
-RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" \
+RUN curl "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" -k -o apache-spark.tgz ``\
 && mkdir -p /opt/spark \
 && tar -xf apache-spark.tgz -C /opt/spark --strip-components=1 \
 && rm apache-spark.tgz
-
 
 # Apache spark environment
 FROM builder as apache-spark

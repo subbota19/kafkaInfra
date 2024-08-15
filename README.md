@@ -12,9 +12,9 @@
 
 `kubectl get pods kafka-766f598bf9-h7h8s -o wide`
 
-# Run Kubernetes cluster on minikub
+# Run Kubernetes cluster on minikube
 
-`minikub status`
+`minikube status`
 
 If output looks like this:
 
@@ -26,7 +26,7 @@ If output looks like this:
 
 you have to start minikub:
 
-`minikub start`
+`minikube start`
 
 For releasing Zookeeper and Kafka services run the following steps:
 
@@ -55,3 +55,7 @@ kafka-topics --bootstrap-server 192.168.49.2:30003 --describe --topic yyy
 kubectl cp kafka-0:/var/lib/kafka /home/yauheni/kafka
 
 kafka-console-consumer --bootstrap-server 192.168.49.2:30003 --topic test
+
+docker exec -i -t 78a6fbac7acf /bin/bash
+
+./spark-submit --master spark://0.0.0.0:7077 --name spark-stream --class com.stream.EvenNumberFilter  local:///stream_2.13-0.1.0-SNAPSHOT.jar

@@ -1,21 +1,13 @@
 # builder step used to download and configure spark environment
-FROM openjdk:11.0.11-jre-slim-buster as builder
-# FROM openjdk:8-jdk as builder
+FROM openjdk:11.0.11-jre-slim-buster AS builder
 
-# Add Dependencies for PySpark and Scala
-RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates python3 python3-pip python3-numpy python3-matplotlib python3-scipy python3-pandas python3-simpy
-
-# ENV SCALA_VERSION=2.13.13
-
-# RUN wget http://www.scala-lang.org/files/archive/scala-$SCALA_VERSION.deb && \
-#     apt-get remove scala-library scala && \
-#     dpkg -i scala-$SCALA_VERSION.deb && \
-#     rm scala-$SCALA_VERSION.deb
+# Add Dependencies for PySpark
+RUN apt-get update && apt-get install -y curl nano vim wget software-properties-common ssh net-tools ca-certificates python3 python3-pip python3-numpy python3-matplotlib python3-scipy python3-pandas python3-simpy
 
 RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3)" 1
 
 # Note: PYTHONHASHSEED is needed when you use Python 3.3 or greater
-ENV SPARK_VERSION=3.4.0 \
+ENV SPARK_VERSION=3.4.3 \
 HADOOP_VERSION=3 \
 SPARK_HOME=/opt/spark \
 PYTHONHASHSEED=1
@@ -26,9 +18,8 @@ RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark
 && tar -xf apache-spark.tgz -C /opt/spark --strip-components=1 \
 && rm apache-spark.tgz
 
-
 # Apache spark environment
-FROM builder as apache-spark
+FROM builder AS apache-spark
 
 WORKDIR /opt/spark
 
@@ -51,7 +42,6 @@ ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 COPY script/start-spark.sh /
-COPY target/scala-2.13/stream-assembly-0.1.0-SNAPSHOT.jar /
-COPY target/scala-2.13/stream_2.13-0.1.0-SNAPSHOT.jar /
+COPY src/main/python/process.py .
 
 CMD ["/bin/bash", "/start-spark.sh"]

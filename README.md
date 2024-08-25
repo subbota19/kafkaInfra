@@ -59,3 +59,9 @@ kafka-console-consumer --bootstrap-server 192.168.49.2:30003 --topic test
 docker exec -i -t 78a6fbac7acf /bin/bash
 
 ./spark-submit --master spark://0.0.0.0:7077 --name spark-stream --class com.stream.EvenNumberFilter  local:///stream_2.13-0.1.0-SNAPSHOT.jar
+
+[//]: # (./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3 /opt/spark/process.py)
+
+./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
+
+./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3 /opt/spark/process.py

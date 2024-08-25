@@ -16,7 +16,7 @@ kafka-services:
 	kubectl apply -f minikub/statefulset/services/headless-service.yaml
 	kubectl apply -f minikub/statefulset/services/bootstrap.yaml
 spark-build:
-	docker build -t apache-spark:3.4.0 -f docker/spark/Dockerfile .
+	docker build -t apache-spark:3.4.3 -f docker/spark/Dockerfile .
 docker-compose-up:
 	docker compose up
 docker-compose-build:

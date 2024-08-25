@@ -1,13 +1,10 @@
-import time
-
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from pyspark.sql.functions import from_json, col
-from pyspark.sql import Window
 
 KAFKA_CONFIG = {
-    "kafka.bootstrap.servers": "192.168.49.2:30003",
-    "subscribe": 'test',
+    "kafka.bootstrap.servers": "192.168.49.2:30000",
+    "subscribe": 'ABC',
     "startingOffsets": "earliest"
 }
 
@@ -15,7 +12,8 @@ KAFKA_CONFIG = {
 spark = (SparkSession
          .builder
          .appName("KafkaStreamProcessing")
-         .config('spark.jars.packages', 'org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0')
+         # .config('spark.jars.packages', 'org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3')
+         # .config('spark.jars.packages', 'org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3')
          .getOrCreate())
 
 # Read from Kafka as a DataFrame
@@ -39,9 +37,7 @@ value_df = (kafka_df
 
 df = (value_df.writeStream
       # .partitionBy("process_id")
-      .format("csv")
-      .option("path", "/home/yauheni/CodeBase/BeamStreamProcessing/src/main/python/output")
-      .option("checkpointLocation", "checkpoint_dir")
+      .format("console")
       .outputMode("append")
       .start())
 

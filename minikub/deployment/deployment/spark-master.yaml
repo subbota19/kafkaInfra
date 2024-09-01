@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+  labels:
+    app: spark
+    role: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark
+      role: master
+  template:
+    metadata:
+      labels:
+        app: spark
+        role: master
+    spec:
+      containers:
+      - name: spark-master
+        image: apache-spark:3.4.3
+        command: ["/bin/bash", "/start-spark.sh"]
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080
+        env:
+        - name: SPARK_WORKLOAD
+          value: "master"
+        - name: SPARK_MASTER_LOG
+          value: "/opt/spark/logs/spark-master.out"
+        - name: SPARK_MASTER_HOST
+          value: "spark-master"
+        - name: SPARK_MASTER_PORT
+          value: "7077"
+        - name: SPARK_MASTER_WEBUI_PORT
+          value: "8080"
+        volumeMounts:
+        - name: spark-logs
+          mountPath: /opt/spark/logs
+      volumes:
+      - name: spark-logs
+        emptyDir: {}

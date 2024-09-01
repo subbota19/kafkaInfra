@@ -15,15 +15,13 @@ kafka-services:
 	kubectl apply -f minikub/statefulset/services/kafka-2.yaml
 	kubectl apply -f minikub/statefulset/services/headless-service.yaml
 	kubectl apply -f minikub/statefulset/services/bootstrap.yaml
+spark-ingress:
+	kubectl apply -f minikub/deployment/ingress/spark.yaml
+spark-deployment:
+	kubectl apply -f minikub/deployment/deployment/spark-master.yaml
+	kubectl apply -f minikub/deployment/deployment/spark-worker.yaml
+spark-services:
+	kubectl apply -f minikub/deployment/services/spark-master.yaml
+	kubectl apply -f minikub/deployment/services/spark-worker.yaml
 spark-build:
 	docker build -t apache-spark:3.4.3 -f docker/spark/Dockerfile .
-docker-compose-up:
-	docker compose up
-docker-compose-build:
-	docker compose build
-docker-compose-down:
-	docker compose down --volumes
-docker-compose-start:
-	docker compose start $(COMPOSE_SERVICE)
-docker-compose-stop:
-	docker compose stop

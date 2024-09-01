@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-worker
+  labels:
+    app: spark
+    role: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark
+      role: worker
+  template:
+    metadata:
+      labels:
+        app: spark
+        role: worker
+    spec:
+      containers:
+      - name: spark-worker
+        image: apache-spark:3.4.3
+        command: ["/bin/bash", "/start-spark.sh"]
+        ports:
+        - containerPort: 8080
+        - containerPort: 7000
+        env:
+        - name: SPARK_WORKLOAD
+          value: "worker"
+        - name: SPARK_MASTER_HOST
+          value: "spark-master"
+        - name: SPARK_WORKER_WEBUI_PORT
+          value: "8080"
+        - name: SPARK_MASTER
+          value: "spark://spark-master:7077"
+        - name: SPARK_WORKER_CORES
+          value: "1"
+        - name: SPARK_WORKER_MEMORY
+          value: "1G"
+        - name: SPARK_DRIVER_MEMORY
+          value: "1G"
+        - name: SPARK_EXECUTOR_MEMORY
+          value: "1G"
+        volumeMounts:
+        - name: spark-logs
+          mountPath: /opt/spark/logs
+      volumes:
+      - name: spark-logs
+        emptyDir: {}

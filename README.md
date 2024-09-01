@@ -65,3 +65,14 @@ docker exec -i -t 78a6fbac7acf /bin/bash
 ./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
 
 ./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
+
+minikube image load apache-spark:3.4.3
+kubectl delete deployment spark-master
+kubectl delete deployment spark-worker
+
+minikube addons enable ingress
+
+docker builder prune
+docker system df
+
+minikube addons enable ingress

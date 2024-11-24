@@ -8,6 +8,11 @@ all:
 kafka-deployment:
 	kubectl apply -f minikub/statefulset/deployment/kafka.yaml
 	kubectl apply -f minikub/statefulset/deployment/zookeeper.yaml
+
+kafka-delete-deployment:
+	kubectl delete -f minikub/statefulset/deployment/kafka.yaml
+	kubectl delete -f minikub/statefulset/deployment/zookeeper.yaml
+
 kafka-services:
 	kubectl apply -f minikub/statefulset/services/zookeeper.yaml
 	kubectl apply -f minikub/statefulset/services/kafka-0.yaml

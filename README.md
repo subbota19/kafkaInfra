@@ -46,7 +46,7 @@ and for deployment:
 
 `kubectl apply -f minikub/statefulset/deployment/kafka`
 
-`kubectl apply -f minikub/statefulset/zookeeper.yaml`
+`kubectl apply -f minikub/statefulset/deployment/zookeeper.yaml`
 
  /var/lib/kafka/data/
  
@@ -76,3 +76,12 @@ docker builder prune
 docker system df
 
 minikube addons enable ingress
+
+# Clean
+
+sudo du -sh /var/lib/docker/
+
+docker system prune --all --force --volumes
+
+minikube ssh
+

@@ -20,6 +20,15 @@ kafka-services:
 	kubectl apply -f minikub/statefulset/services/kafka-2.yaml
 	kubectl apply -f minikub/statefulset/services/headless-service.yaml
 	kubectl apply -f minikub/statefulset/services/bootstrap.yaml
+
+kafka-delete-services:
+	kubectl delete -f minikub/statefulset/services/zookeeper.yaml
+	kubectl delete -f minikub/statefulset/services/kafka-0.yaml
+	kubectl delete -f minikub/statefulset/services/kafka-1.yaml
+	kubectl delete -f minikub/statefulset/services/kafka-2.yaml
+	kubectl delete -f minikub/statefulset/services/headless-service.yaml
+	kubectl delete -f minikub/statefulset/services/bootstrap.yaml
+
 spark-ingress:
 	kubectl apply -f minikub/deployment/ingress/spark.yaml
 spark-deployment:

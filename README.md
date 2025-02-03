@@ -1,17 +1,5 @@
 # BeamStreamProcessing
 
-`kubectl exec -it $pod_name -- bash`
-
-`kubectl get pv`
-
-`kubectl get pvc`
-
-`kubectl logs zookeepeer-0`
-
-`kubectl describe svc kafka`
-
-`kubectl get pods kafka-766f598bf9-h7h8s -o wide`
-
 # Run Kubernetes cluster on minikube
 
 `minikube status`
@@ -48,32 +36,32 @@ and for deployment:
 
 `kubectl apply -f minikub/statefulset/deployment/zookeeper.yaml`
 
- /var/lib/kafka/data/
- 
-kafka-topics --bootstrap-server 192.168.49.2:30003 --describe --topic yyy
- 
-kubectl cp kafka-0:/var/lib/kafka /home/yauheni/kafka
+JUST USEFUL COMMANDS:
 
-kafka-console-consumer --bootstrap-server 192.168.49.2:30003 --topic test
+`kubectl exec -it $pod_name -- bash`
 
-docker exec -i -t 78a6fbac7acf /bin/bash
+`kubectl get pv`
 
-./spark-submit --master spark://0.0.0.0:7077 --name spark-stream --class com.stream.EvenNumberFilter  local:///stream_2.13-0.1.0-SNAPSHOT.jar
+`kubectl get pvc`
 
-[//]: # (./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3 /opt/spark/process.py)
+`kubectl logs zookeepeer-0`
 
-./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
+`kubectl describe svc kafka`
 
-./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.3,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
+`kubectl get pods kafka-766f598bf9-h7h8s -o wide`
 
-minikube image load apache-spark:3.4.3
-kubectl delete deployment spark-master
-kubectl delete deployment spark-worker
+/var/lib/kafka/data/
 
-minikube addons enable ingress
+# Spark
 
-docker builder prune
-docker system df
+./spark-submit --master spark://0.0.0.0:7077 --name spark-stream --class com.stream.EvenNumberFilter local:
+///stream_2.13-0.1.0-SNAPSHOT.jar
+
+./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:
+spark-streaming-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
+
+./spark-submit --master spark://spark-master:7077 --name spark-stream --packages org.apache.spark:
+spark-streaming-kafka-0-10_2.12:3.4.3,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.3 /opt/spark/process.py
 
 minikube addons enable ingress
 
@@ -83,5 +71,23 @@ sudo du -sh /var/lib/docker/
 
 docker system prune --all --force --volumes
 
-minikube ssh
+# Kafka scripts
 
+kafka-run-class kafka.tools.GetOffsetShell --bootstrap-server 192.168.49.2:30003 --topic benchmark_fault --time -1
+
+kafka-configs --bootstrap-server 192.168.49.2:30003 --topic benchmark_fault --describe --all
+
+kafka-consumer-groups --bootstrap-server 192.168.49.2:30003 --topic benchmark_fault --list
+
+kafka-console-consumer --bootstrap-server 192.168.49.2:30
+003 --topic benchmark_fault --property print.key=true --property key.separator=": "
+
+kafka-console-consumer --bootstrap-server 192.168.49.2:30003 \
+                       --topic benchmark_fault \
+                       --property print.key=true \
+                       --property key.separator=": " \
+                       --property print.timestamp=true \
+                       --property print.offset=true \
+                       --group my-consumer-group
+
+kafka-console-producer --bootstrap-server 192.168.49.2:30003 --topic benchmark_fault

@@ -1,4 +1,22 @@
-# BeamStreamProcessing
+# kafkaInfra
+
+This project provides a Kubernetes deployment for Apache Kafka and Zookeeper using StatefulSet, ensuring stable network
+identities and persistent storage, allows for easy scaling by adding more brokers as needed.
+
+## Key Features
+
+* StatefulSet for Kafka: Enables broker scaling (standard Deployment creates pods with random names).
+* Bootstrap Service: Acts as an entry point for external clients to connect to the Kafka cluster, and traffic will be
+  routed to the appropriate broker (production solution can use Load Balancer).
+* Headless Service: Facilitates direct broker discovery within the cluster (without fixed IPs).
+
+Each Kafka broker is accessible via its own DNS name:
+
+`kafka-0.kafka.default.svc.cluster.local`
+`kafka-1.kafka.default.svc.cluster.local`
+`kafka-2.kafka.default.svc.cluster.local`
+
+* NodePort Services: Expose brokers externally for communication.
 
 # Run Kubernetes cluster on minikube
 
@@ -83,11 +101,11 @@ kafka-console-consumer --bootstrap-server 192.168.49.2:30
 003 --topic benchmark_fault --property print.key=true --property key.separator=": "
 
 kafka-console-consumer --bootstrap-server 192.168.49.2:30003 \
-                       --topic benchmark_fault \
-                       --property print.key=true \
-                       --property key.separator=": " \
-                       --property print.timestamp=true \
-                       --property print.offset=true \
-                       --group my-consumer-group
+--topic benchmark_fault \
+--property print.key=true \
+--property key.separator=": " \
+--property print.timestamp=true \
+--property print.offset=true \
+--group my-consumer-group
 
 kafka-console-producer --bootstrap-server 192.168.49.2:30003 --topic benchmark_fault

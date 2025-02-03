@@ -70,7 +70,7 @@ JUST USEFUL COMMANDS:
 
 /var/lib/kafka/data/
 
-# Spark
+# Spark (as part of Kafka project, I experimented with setting up a Spark cluster; Not finished)
 
 ./spark-submit --master spark://0.0.0.0:7077 --name spark-stream --class com.stream.EvenNumberFilter local:
 ///stream_2.13-0.1.0-SNAPSHOT.jar
